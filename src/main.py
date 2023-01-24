@@ -56,9 +56,18 @@ def chat(user_input):
         ans_define_prompt = f"for the user input: '{user_input}'"
         tag = gpt(f"{tag_define_prompt} {ans_define_prompt}").strip()
 
+        # Possible tag found
         for intent in data["intents"]:
-            if tag == intent["tag"]:
-                response =  random.choice(intent["responses"])
+            print(intent["tag"])
+            print(tag)
+            if intent["tag"] in tag:
+                response = random.choice(intent["responses"])
+                return response
 
-        return response
+        # Possible tag NOT found
+        for intent in data["intents"]:
+            if intent["tag"] == "noanswer":
+                response = random.choice(intent["responses"])
+                return response
+
 

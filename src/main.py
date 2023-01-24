@@ -29,7 +29,7 @@ for intent in data["intents"]:
 
 tag_pattern_set = tag_pattern_set.strip()[:-2]
 
-def chat(user_prompt):
+def gpt(user_prompt):
     openai.api_key = KEY
 
     response = openai.Completion.create(
@@ -45,21 +45,21 @@ def chat(user_prompt):
     return response.choices[0].text
 
 
-if __name__ == "__main__":
+def chat(user_input):
     while True:
-        user_input = input("You: ")
+        # For Debugging on terminal
+        # user_input = input("You: ") 
         user_input = user_input.strip()
-
         if user_input.lower() == "quit":
             break
 
         tag_define_prompt = f"Choose/Guess the tag from the '<tag> -> <pattern>' set ({tag_pattern_set})"
         ans_define_prompt = f"for the user input: '{user_input}'"
-        tag = chat(f"{tag_define_prompt} {ans_define_prompt}").strip()
+        tag = gpt(f"{tag_define_prompt} {ans_define_prompt}").strip()
 
         for intent in data["intents"]:
             if tag == intent["tag"]:
                 response =  random.choice(intent["responses"])
 
-        print(f"Bot: {response}")
+        return response
 

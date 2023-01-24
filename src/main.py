@@ -26,7 +26,6 @@ for intent in data["intents"]:
         else:
             index += 1;
 
-
 tag_pattern_set = tag_pattern_set.strip()[:-2]
 
 def gpt(user_prompt):

@@ -1,12 +1,14 @@
 from dotenv import load_dotenv
+import openai
 
 import json
 import os
+import random
 
 load_dotenv()
-TOKEN = os.getenv("TOKEN")
+KEY = os.getenv("OPENAI_API_KEY")
 
-with open("./intents.json") as intent_file:
+with open("../data/intents.json") as intent_file:
     data = json.load(intent_file)
 
 tag_pattern_set = ""
@@ -27,21 +29,37 @@ for intent in data["intents"]:
 
 tag_pattern_set = tag_pattern_set.strip()[:-2]
 
-def chat(prompt):
-    # Works with API
-    # TODO
-    return prompt
+def chat(user_prompt):
+    openai.api_key = KEY
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=user_prompt,
+        temperature=0.7,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    return response.choices[0].text
 
 
 if __name__ == "__main__":
-    user_input = input("You: ")
-    user_input = user_input.strip()
+    while True:
+        user_input = input("You: ")
+        user_input = user_input.strip()
 
-    tag_define_prompt = f"Check for xyz ({tag_pattern_set})"
-    ans_define_prompt = f"for the input {user_input}"
+        if user_input.lower() == "quit":
+            break
 
-    print(f"{tag_define_prompt} {ans_define_prompt}")
-    response = chat(f"{tag_define_prompt} {ans_define_prompt}")
+        tag_define_prompt = f"Choose/Guess the tag from the '<tag> -> <pattern>' set ({tag_pattern_set})"
+        ans_define_prompt = f"for the user input: '{user_input}'"
+        tag = chat(f"{tag_define_prompt} {ans_define_prompt}").strip()
 
-    print(f"Bot: {response}")
+        for intent in data["intents"]:
+            if tag == intent["tag"]:
+                response =  random.choice(intent["responses"])
+
+        print(f"Bot: {response}")
 

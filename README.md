@@ -27,5 +27,5 @@ $ python3 src/main.py
 ```
 
 ## Dependencies
-* [openai]() ()
+* [openai](https://pypi.org/project/openai/) (Python client library for the OpenAI API)
 * [python-dotenv](https://pypi.org/project/python-dotenv/) (Read key-value pairs from a .env file and set them as environment variables)
